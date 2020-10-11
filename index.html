@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        td{
+            border: solid 1px black;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script>
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://api.openweathermap.org/data/2.5/weather?APPID=7b5cbb6bb21d0fc862c3b47a3b967ddf&lat=48.28&lon=35.1');
+    xhr.send();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === xhr.DONE) {
+            console.log(xhr.responseText);
+            const data = JSON.parse(xhr.responseText);
+            showData(data);
+        }
+    }
+
+    function showData(data) {
+
+        const h1 = document.createElement("h1");
+        h1.innerHTML = "Dnipro " + fahrenheitToCelsius(data.main.temp).toFixed(1);
+        const img = document.createElement("img");
+        img.src = "https://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png";
+        img.alt = "";
+        h1.append(img);
+        $("body").append(h1);
+
+        addElement("Temperature", fahrenheitToCelsius(data.main.temp).toFixed(2));
+        addElement("Min temperature", fahrenheitToCelsius(data.main.temp_min).toFixed(2));
+        addElement("Max temperature", fahrenheitToCelsius(data.main.temp_max).toFixed(2));
+        addElement("Pressure", data.main.pressure);
+        addElement("Humidity", data.main.humidity);
+    }
+
+    const addElement = function (text, value) {
+        const tr = document.createElement("tr");
+        const td1 = document.createElement("td");
+        const td2 = document.createElement("td");
+        td1.innerHTML = text;
+        td2.innerHTML = value;
+        tr.append(td1, td2);
+        $("body").append(tr);
+    }
+
+    const fahrenheitToCelsius = function (e) {
+        return e - 273.15;
+    }
+
+</script>
+</body>
+</html>
